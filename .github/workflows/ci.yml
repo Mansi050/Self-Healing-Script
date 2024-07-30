@@ -20,26 +20,16 @@ jobs:
         java-version: '22.0.2'
 
     - name: Install JRuby
-      run: |
-         wget https://repo1.maven.org/maven2/org/jruby/jruby-complete/9.4.8.0/jruby-complete-9.4.8.0.jar -O jruby-complete.jar
-         echo 'export JRUBY_HOME=$PWD/jruby-complete.jar' >> $GITHUB_ENV
-         echo 'alias jruby="java -jar $JRUBY_HOME"' >> $GITHUB_ENV
-         echo 'export PATH=$PWD:$PATH' >> $GITHUB_ENV
+      run: wget https://repo1.maven.org/maven2/org/jruby/jruby-complete/9.4.8.0/jruby-complete-9.4.8.0.jar -O jruby-complete.jar
 
     - name: Install Bundler
       shell: bash
-      run: |
-        source $GITHUB_ENV
-        jruby -S gem install bundler
+      run: java -jar jruby-complete.jar -S gem install bundler
 
     - name: Install Dependencies
       shell: bash
-      run: |
-        source $GITHUB_ENV
-        jruby -S bundle install
+      run: java -jar jruby-complete.jar -S bundle install
 
     - name: Run JRuby Script
       shell: bash
-      run: |
-        source $GITHUB_ENV
-        jruby helloworld.rb
+      run: java -jar jruby-complete.jar helloworld.rb
