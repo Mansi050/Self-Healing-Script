@@ -17,19 +17,29 @@ jobs:
       uses: actions/setup-java@v2
       with:
         distribution: 'adopt'
-        java-version: '11'
+        java-version: '22.0.2'
 
     - name: Install JRuby
       run: |
-        wget https://repo1.maven.org/maven2/org/jruby/jruby-complete/9.2.13.0/jruby-complete-9.2.13.0.jar -O jruby-complete.jar
-        echo 'alias jruby="java -jar $PWD/jruby-complete.jar"' >> $GITHUB_ENV
-        echo 'export PATH=$PWD:$PATH' >> $GITHUB_ENV
+         wget https://repo1.maven.org/maven2/org/jruby/jruby-complete/9.4.8.0/jruby-complete-9.4.8.0.jar -O jruby-complete.jar
+         echo 'export JRUBY_HOME=$PWD/jruby-complete.jar' >> $GITHUB_ENV
+         echo 'alias jruby="java -jar $JRUBY_HOME"' >> $GITHUB_ENV
+         echo 'export PATH=$PWD:$PATH' >> $GITHUB_ENV
 
     - name: Install Bundler
-      run: jruby -S gem install bundler
+      shell: bash
+      run: |
+        source $GITHUB_ENV
+        jruby -S gem install bundler
 
     - name: Install Dependencies
-      run: jruby -S bundle install
+      shell: bash
+      run: |
+        source $GITHUB_ENV
+        jruby -S bundle install
 
     - name: Run JRuby Script
-      run: jruby helloworld.rb
+      shell: bash
+      run: |
+        source $GITHUB_ENV
+        jruby helloworld.rb
