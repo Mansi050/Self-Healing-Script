@@ -22,27 +22,17 @@ jobs:
     - name: Install JRuby
       run: wget https://repo1.maven.org/maven2/org/jruby/jruby-complete/9.4.8.0/jruby-complete-9.4.8.0.jar -O jruby-complete.jar
 
-    - name: Set up GEM environment
-      run: |
-        mkdir -p ~/.gem
-        echo 'export GEM_HOME=$HOME/.gem' >> $GITHUB_ENV
-        echo 'export GEM_PATH=$HOME/.gem' >> $GITHUB_ENV
-        echo 'export PATH=$HOME/.gem/bin:$PATH' >> $GITHUB_ENV
-
     - name: Install Bundler
       shell: bash
       run: |
-        source $GITHUB_ENV
-        java -jar jruby-complete.jar -S gem install bundler
+        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar -S gem install bundler
 
     - name: Install Dependencies
       shell: bash
       run: |
-        source $GITHUB_ENV
-        java -jar jruby-complete.jar -S bundle install
+        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar -S bundle install
 
     - name: Run JRuby Script
       shell: bash
       run: |
-        source $GITHUB_ENV
-        java -jar jruby-complete.jar helloworld.rb
+        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar helloworld.rb
