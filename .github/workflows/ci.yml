@@ -3,7 +3,7 @@ name: Run JRuby Script on HTML Change
 on:
   push:
     paths:
-      - '**/*.html'
+      - 'form.html'
 
 jobs:
   run-jruby-script:
@@ -13,7 +13,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up JRuby
+    - name: Set up Java
       uses: actions/setup-java@v2
       with:
         distribution: 'adopt'
@@ -22,14 +22,27 @@ jobs:
     - name: Install JRuby
       run: wget https://repo1.maven.org/maven2/org/jruby/jruby-complete/9.4.8.0/jruby-complete-9.4.8.0.jar -O jruby-complete.jar
 
+    - name: Set up GEM environment
+      run: |
+        mkdir -p ~/.gem
+        echo 'export GEM_HOME=$HOME/.gem' >> $GITHUB_ENV
+        echo 'export GEM_PATH=$HOME/.gem' >> $GITHUB_ENV
+        echo 'export PATH=$HOME/.gem/bin:$PATH' >> $GITHUB_ENV
+
     - name: Install Bundler
       shell: bash
-      run: java -jar jruby-complete.jar -S gem install bundler
+      run: |
+        source $GITHUB_ENV
+        java -jar jruby-complete.jar -S gem install bundler
 
     - name: Install Dependencies
       shell: bash
-      run: java -jar jruby-complete.jar -S bundle install
+      run: |
+        source $GITHUB_ENV
+        java -jar jruby-complete.jar -S bundle install
 
     - name: Run JRuby Script
       shell: bash
-      run: java -jar jruby-complete.jar helloworld.rb
+      run: |
+        source $GITHUB_ENV
+        java -jar jruby-complete.jar helloworld.rb
