@@ -1,12 +1,12 @@
-name: Run JRuby Script on HTML Change
+name: CI/CD Pipeline for GitHub Pages Deployment
 
 on:
   push:
     paths:
-      - 'index.html'
+      - '**.html'  # Trigger on changes to HTML files
 
 jobs:
-  run-jruby-script:
+  change-detection:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,6 +19,11 @@ jobs:
         distribution: 'adopt'
         java-version: '22.0.2'
 
+    - name: Install Chromedriver
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y chromedriver
+
     - name: Install JRuby
       run: wget https://repo1.maven.org/maven2/org/jruby/jruby-complete/9.4.8.0/jruby-complete-9.4.8.0.jar -O jruby-complete.jar
 
@@ -30,17 +35,22 @@ jobs:
     - name: Install Dependencies
       shell: bash
       run: |
+        cd $GITHUB_WORKSPACE
         GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar -S bundle install
 
-    # - name: Run JRuby Script
-    #   shell: bash
-    #   run: |
-    #     GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar helloworld.rb
     - name: Capture Initial State
       shell: bash
       run: |
         cd $GITHUB_WORKSPACE
-        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar capture_initial_state.rb
+        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar $GITHUB_WORKSPACE/capture_initial_state.rb
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: change-detection
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
@@ -49,14 +59,48 @@ jobs:
         publish_dir: ./  # Set this to the root directory
         publish_branch: gh-pages  # Ensure this matches your GitHub Pages branch
 
+  update-locators:
+    runs-on: ubuntu-latest
+    needs: deploy
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '22.0.2'
+
+    - name: Install Chromedriver
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y chromedriver
+
+    - name: Install JRuby
+      run: wget https://repo1.maven.org/maven2/org/jruby/jruby-complete/9.4.8.0/jruby-complete-9.4.8.0.jar -O jruby-complete.jar
+
+    - name: Install Bundler
+      shell: bash
+      run: |
+        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar -S gem install bundler
+
+    - name: Install Dependencies
+      shell: bash
+      run: |
+        cd $GITHUB_WORKSPACE
+        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar -S bundle install
+
+
     - name: Detect Changes
       shell: bash
       run: |
         cd $GITHUB_WORKSPACE
-        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar detect_changes.rb
+        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar $GITHUB_WORKSPACE/detect_changes.rb   
 
     - name: Update Locators
       shell: bash
       run: |
         cd $GITHUB_WORKSPACE
-        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar update_locators.rb
+        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.
