@@ -7,6 +7,7 @@ end
 
 # Method to detect changes between the initial and current state
 def detect_changes(url)
+  puts "Detecting chnages...."
   initial_state = load_initial_state # Load the initial state
   current_state = capture_state(url) # Capture the current state using the shared method
 

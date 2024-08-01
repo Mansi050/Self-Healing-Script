@@ -5,6 +5,7 @@ def capture_initial_state(url)
 
   # Write the elements hash to a JSON file
   File.write('initial_state.json', JSON.pretty_generate(elements))
+  puts"Creating JSON File"
 end
 
 # Call the method with the desired URL
