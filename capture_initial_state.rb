@@ -8,4 +8,4 @@ def capture_initial_state(url)
 end
 
 # Call the method with the desired URL
-capture_initial_state('https://www.google.com/')
+capture_initial_state('https://mansi050.github.io/Self-Healing-Script/')

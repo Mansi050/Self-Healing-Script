@@ -30,4 +30,4 @@ def detect_changes(url)
 end
 
 # Call the method with the desired URL
-detect_changes('https://www.google.com/')
+detect_changes('https://mansi050.github.io/Self-Healing-Script/')
