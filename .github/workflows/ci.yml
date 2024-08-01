@@ -54,7 +54,7 @@ jobs:
         git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
         git fetch origin
         git worktree add gh-pages origin/gh-pages || git worktree add gh-pages --no-checkout
-        cp -R * gh-pages/
+        rsync -av --progress --exclude='gh-pages' --exclude='.git' $GITHUB_WORKSPACE/ gh-pages/
         cd gh-pages
         git add .
         git commit -m "Deploy to GitHub Pages" || echo "No changes to commit"
