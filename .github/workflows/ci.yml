@@ -3,7 +3,7 @@ name: Run JRuby Script on HTML Change
 on:
   push:
     paths:
-      - 'form.html'
+      - 'index.html'
 
 jobs:
   run-jruby-script:
