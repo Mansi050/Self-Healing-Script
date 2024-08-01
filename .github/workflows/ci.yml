@@ -88,7 +88,7 @@ jobs:
       shell: bash
       run: |
         cd $GITHUB_WORKSPACE
-        GEM_HOME=$HOME/.gem GEM PATH=$HOME/.gem java -jar jruby-complete.jar -S bundle install
+        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar -S bundle install
 
     - name: Detect Changes
       shell: bash
