@@ -57,7 +57,7 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./  # Set this to the root directory
-        publish_branch: gh-pages  # Ensure this matches your GitHub Pages branch
+        publish_branch: main  # Ensure this matches your GitHub Pages branch
 
   update-locators:
     runs-on: ubuntu-latest
