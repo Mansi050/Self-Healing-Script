@@ -48,10 +48,12 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Deploy to GitHub Pages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git config --global user.name "github-actions[bot]"
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
         git fetch origin
         git worktree add gh-pages origin/gh-pages || git worktree add gh-pages --no-checkout
         rsync -av --progress --exclude='gh-pages' --exclude='.git' $GITHUB_WORKSPACE/ gh-pages/
@@ -86,16 +88,16 @@ jobs:
       shell: bash
       run: |
         cd $GITHUB_WORKSPACE
-        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar -S bundle install
+        GEM_HOME=$HOME/.gem GEM PATH=$HOME/.gem java -jar jruby-complete.jar -S bundle install
 
     - name: Detect Changes
       shell: bash
       run: |
         cd $GITHUB_WORKSPACE
-        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar $GITHUB_WORKSPACE/detect_changes.rb
+        GEM_HOME=$HOME/.gem GEM PATH=$HOME/.gem java -jar jruby-complete.jar $GITHUB_WORKSPACE/detect_changes.rb
 
     - name: Update Locators
       shell: bash
       run: |
         cd $GITHUB_WORKSPACE
-        GEM_HOME=$HOME/.gem GEM_PATH=$HOME/.gem java -jar jruby-complete.jar $GITHUB_WORKSPACE/update_locators.rb
+        GEM_HOME=$HOME/.gem GEM PATH=$HOME/.gem java -jar jruby-complete.jar $GITHUB_WORKSPACE/update_locators.rb
